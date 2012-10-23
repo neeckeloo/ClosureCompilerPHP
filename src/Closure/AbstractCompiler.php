@@ -9,7 +9,7 @@ namespace Closure;
 
 use Closure\Compiler\FormattingOptions;
 
-abstract class AbstractCompiler implements Compiler\CompilerInterface
+abstract class AbstractCompiler implements CompilerInterface
 {
     const MODE_WHITESPACE_ONLY = 'WHITESPACE_ONLY';
     const MODE_SIMPLE_OPTIMIZATIONS = 'SIMPLE_OPTIMIZATIONS';
@@ -42,7 +42,7 @@ abstract class AbstractCompiler implements Compiler\CompilerInterface
     /**
      * @var string
      */
-    protected $outputFormat = self::FORMAT_XML;
+    protected $outputFormat = self::OUTPUT_FORMAT_XML;
 
     /**
      * Available output formats

@@ -59,7 +59,7 @@ class HttpRequestHandler
      * @param array $data
      * @param array $settings
      */
-    public function __construct(array $data, array $settings = array())
+    public function __construct(array $data = array(), array $settings = array())
     {
         $this->setData($data);
 
@@ -80,11 +80,7 @@ class HttpRequestHandler
      */
     public function setData(array $data)
     {
-        if (empty($data)) {
-            throw new Exception\InvalidArgumentException('The request arguments are not valid.');
-        }
-
-        $this->data = $data;
+        $this->data = (array) $data;
         
         return $this;
     }
