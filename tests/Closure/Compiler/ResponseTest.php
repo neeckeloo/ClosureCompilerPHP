@@ -7,31 +7,63 @@
  */
 namespace Closure\Compiler;
 
-class FormattingOptionsTest extends \PHPUnit_Framework_TestCase
+class ResponseTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var FormattingOptions
+     * @var Response
      */
-    protected $options;
+    protected $response;
     
     public function setUp()
     {
-        $this->options = new FormattingOptions();
+        $this->response = new Response();
     }
 
-    public function testSetPrettyPrintEnabled()
+    public function testSetCompiledCode()
     {
-        $this->assertFalse($this->options->getPrettyPrintEnabled());
-
-        $this->options->setPrettyPrintEnabled(true);
-        $this->assertTrue($this->options->getPrettyPrintEnabled());
+        $this->response->setCompiledCode('foo');
+        $this->assertEquals('foo', $this->response->getCompiledCode());
     }
 
-    public function testSetPrintInputDelimiterEnabled()
+    public function testSetWarnings()
     {
-        $this->assertFalse($this->options->getPrintInputDelimiterEnabled());
+        $this->response->setWarnings(array('foo' => 123));
+        $this->assertCount(1, $this->response->getWarnings());
+    }
 
-        $this->options->setPrintInputDelimiterEnabled(true);
-        $this->assertTrue($this->options->getPrintInputDelimiterEnabled());
+    public function testSetErrors()
+    {
+        $this->response->setErrors(array('foo' => 123));
+        $this->assertCount(1, $this->response->getErrors());
+    }
+
+    public function testSetOriginalSize()
+    {
+        $this->response->setOriginalSize(123);
+        $this->assertEquals(123, $this->response->getOriginalSize());
+    }
+
+    public function testSetOriginalGzipSize()
+    {
+        $this->response->setOriginalGzipSize(123);
+        $this->assertEquals(123, $this->response->getOriginalGzipSize());
+    }
+
+    public function testSetCompressedSize()
+    {
+        $this->response->setCompressedSize(123);
+        $this->assertEquals(123, $this->response->getCompressedSize());
+    }
+
+    public function testSetCompressedGzipSize()
+    {
+        $this->response->setCompressedGzipSize(123);
+        $this->assertEquals(123, $this->response->getCompressedGzipSize());
+    }
+
+    public function testSetCompileTime()
+    {
+        $this->response->setCompileTime(123);
+        $this->assertEquals(123, $this->response->getCompileTime());
     }
 }

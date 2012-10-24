@@ -7,12 +7,20 @@
  */
 namespace Closure;
 
+use Closure\Compiler\Response as CompilerResponse;
+
 class RemoteCompiler extends AbstractCompiler
 {
     /**
      * @var HttpRequestHandler
      */
     protected $requestHandler;
+
+    /**
+     *
+     * @var CompilerResponse
+     */
+    protected $response;
 
     /**
      * Sets request handler
@@ -33,7 +41,7 @@ class RemoteCompiler extends AbstractCompiler
 
     /**
      * Returns request handler
-     * 
+     *
      * @return HttpRequestHandler
      */
     public function getRequestHandler()
@@ -46,6 +54,60 @@ class RemoteCompiler extends AbstractCompiler
     }
 
     /**
+     * Sets compiler response
+     *
+     * @param CompilerResponse $response
+     * @return RemoteCompiler
+     */
+    public function setCompilerResponse($response)
+    {
+        $this->response = $response;
+
+        return $this;
+    }
+
+    /**
+     * Returns compiler response
+     *
+     * @return CompilerResponse
+     */
+    public function getCompilerResponse()
+    {
+        if (!isset($this->response)) {
+            $this->setCompilerResponse(new CompilerResponse());
+        }
+
+        return $this->response;
+    }
+
+    /**
+     * Build response object parsing xml contained in the compiler response
+     *
+     * @param \SimpleXMLElement $xml
+     * @return array
+     */
+    function buildResponse($xml)
+    {
+        $response = $this->getCompilerResponse();
+
+        foreach ($xml->children() as $name => $child) {
+            if (count($child->children()) > 0) {
+                $this->buildResponse($child);
+                continue;
+            }
+
+            $value = (string) $child;
+
+            $method = 'set' . ucfirst($name);
+            if (method_exists($response, $method)) {
+                call_user_func_array(array($response, $method), array($value));
+            }
+        }
+
+        return $response;
+    }
+
+    /**
      * Compile Javascript code
      * 
      * @return string
@@ -55,6 +117,10 @@ class RemoteCompiler extends AbstractCompiler
         $requestHandler = $this->getRequestHandler();
         $requestHandler->setData($this->getParams());
 
-        return $requestHandler->sendRequest();
+        $responseData = $requestHandler->sendRequest();
+
+        $xml = new \SimpleXMLElement($responseData);
+
+        return $this->buildResponse($xml);
     }
 }

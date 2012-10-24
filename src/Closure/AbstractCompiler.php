@@ -231,7 +231,7 @@ abstract class AbstractCompiler implements CompilerInterface
             ));
         }
 
-        $this->scripts[] = file_get_contents($file);
+        $this->addScript(file_get_contents($file));
 
         return $this;
     }
