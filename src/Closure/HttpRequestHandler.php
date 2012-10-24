@@ -288,9 +288,15 @@ class HttpRequestHandler
         
         // Parse and urlencode the request data
         $data = $this->encodeData();
+        
+        $referer = '';
+        if (isset($_SERVER['HTTP_REFERER'])) {
+            $referer = $_SERVER['HTTP_REFERER'];
+        }
 
         fputs($fp, "$this->method $path HTTP/1.0\r\n");
-        fputs($fp, "Host: $host");
+        fputs($fp, "Host: $host\r\n");
+        fputs($fp, "Referer: $referer\r\n");
         fputs($fp, "Content-type: application/x-www-form-urlencoded\r\n");
         fputs($fp, "Content-length: ". strlen($data) . "\r\n");
         fputs($fp, "Connection: close\r\n\r\n");
