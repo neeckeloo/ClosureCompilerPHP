@@ -76,7 +76,6 @@ class HttpRequestHandler
      *
      * @param array $data
      * @return HttpRequestHandler
-     * @throws Exception\InvalidArgumentException
      */
     public function setData(array $data)
     {
@@ -153,7 +152,7 @@ class HttpRequestHandler
         $method = strtoupper($method);
 
         if ($method != self::METHOD_GET && $method != self::METHOD_POST) {
-            throw new Exception\InvalidArgumentException(sprtinf(
+            throw new Exception\InvalidArgumentException(sprintf(
                 'The request method "%s" is not valid.',
                 $method
             ));
@@ -264,7 +263,7 @@ class HttpRequestHandler
      * Send an HTTP request to the specified URL and TCP port
      *
      * @return string
-     * @throws HttpRequestHandlerException
+     * @throws Exception\InvalidArgumentException
      */
     public function sendRequest()
     {
