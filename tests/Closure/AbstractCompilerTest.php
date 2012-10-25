@@ -33,6 +33,14 @@ class AbstractCompilerTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @expectedException Closure\Exception\InvalidArgumentException
+     */
+    public function testSetModeWithInvalidParam()
+    {
+        $this->compiler->setMode('foo');
+    }
+
     public function testSetOutputFormat()
     {
         $this->assertEquals(
@@ -47,6 +55,14 @@ class AbstractCompilerTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @expectedException Closure\Exception\InvalidArgumentException
+     */
+    public function testSetOutputFormatWithInvalidParam()
+    {
+        $this->compiler->setOutputFormat('foo');
+    }
+
     public function testSetWarningLevel()
     {
         $this->assertEquals(
@@ -59,6 +75,14 @@ class AbstractCompilerTest extends \PHPUnit_Framework_TestCase
             AbstractCompiler::WARNING_LEVEL_VERBOSE,
             $this->compiler->getWarningLevel()
         );
+    }
+
+    /**
+     * @expectedException Closure\Exception\InvalidArgumentException
+     */
+    public function testSetWarningLevelWithInvalidParam()
+    {
+        $this->compiler->setWarningLevel('foo');
     }
 
     public function testSetFormattingOptions()
@@ -78,5 +102,29 @@ class AbstractCompilerTest extends \PHPUnit_Framework_TestCase
     public function testGetParams()
     {
         $this->assertCount(7, $this->compiler->getParams());
+    }
+
+    /**
+     * @expectedException Closure\Exception\InvalidArgumentException
+     */
+    public function testAddLocalFileThatNotExists()
+    {
+        $this->compiler->addLocalFile('foo');
+    }
+
+    /**
+     * @expectedException Closure\Exception\InvalidArgumentException
+     */
+    public function testAddRemoteFileWithInvalidUrl()
+    {
+        $this->compiler->addRemoteFile('foo');
+    }
+
+    /**
+     * @expectedException Closure\Exception\RuntimeException
+     */
+    public function testCompile()
+    {
+        $this->compiler->compile();
     }
 }

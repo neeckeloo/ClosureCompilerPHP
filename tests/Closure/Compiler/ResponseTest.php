@@ -7,6 +7,8 @@
  */
 namespace Closure\Compiler;
 
+use Closure\Compiler\Response\Error as CompilerResponseError;
+
 class ResponseTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -25,16 +27,24 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('foo', $this->response->getCompiledCode());
     }
 
-    public function testSetWarnings()
+    public function testAddWarnings()
     {
-        $this->response->setWarnings(array('foo' => 123));
-        $this->assertCount(1, $this->response->getWarnings());
+        for ($i = 0; $i < 3; $i++) {
+            $warning = new CompilerResponseError('foo', array());
+            $this->response->addWarning($warning);
+        }
+
+        $this->assertCount(3, $this->response->getWarnings());
     }
 
-    public function testSetErrors()
+    public function testAddErrors()
     {
-        $this->response->setErrors(array('foo' => 123));
-        $this->assertCount(1, $this->response->getErrors());
+        for ($i = 0; $i < 3; $i++) {
+            $error = new CompilerResponseError('foo', array());
+            $this->response->addError($error);
+        }
+
+        $this->assertCount(3, $this->response->getErrors());
     }
 
     public function testSetOriginalSize()

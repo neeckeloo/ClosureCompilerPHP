@@ -7,6 +7,8 @@
  */
 namespace Closure;
 
+use Closure\Compiler\Response as CompilerResponse;
+
 class RemoteCompilerTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -16,7 +18,7 @@ class RemoteCompilerTest extends \PHPUnit_Framework_TestCase
     
     public function setUp()
     {
-        $this->compiler = $this->getMockForAbstractClass('Closure\RemoteCompiler');
+        $this->compiler = new RemoteCompiler();
     }
 
     public function testSetRequestHandler()
@@ -33,23 +35,51 @@ class RemoteCompilerTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testSetCompilerResponse()
+    {
+        $this->assertInstanceOf(
+            'Closure\Compiler\Response',
+            $this->compiler->getCompilerResponse()
+        );
+
+        $this->compiler->setCompilerResponse(new CompilerResponse());
+        $this->assertInstanceOf(
+            'Closure\Compiler\Response',
+            $this->compiler->getCompilerResponse()
+        );
+    }
+
     public function testCompile()
     {
-        $this->compiler->addScript('vr console = function() { alert(\'toto\'); }');
-        $response = $this->compiler->compile();
+        $xml = '<compilationResult>
+          <compiledCode>var a="hello";alert(a);</compiledCode>
+          <statistics>
+            <originalSize>98</originalSize>
+            <originalGzipSize>62</originalGzipSize>
+            <compressedSize>35</compressedSize>
+            <compressedGzipSize>23</compressedGzipSize>
+            <compileTime>0</compileTime>
+          </statistics>
+        </compilationResult>';
+        
+        $requestHandler = $this->getMock('Closure\HttpRequestHandler', array('sendRequest'));
+        $requestHandler->expects($this->once())
+            ->method('sendRequest')
+            ->will($this->returnValue($xml));
 
-        var_dump($response->getWarnings());
-        var_dump($response->getErrors());
+        $this->compiler->setRequestHandler($requestHandler);
+
+        $response = $this->compiler->compile();
 
         $this->assertInstanceOf('Closure\Compiler\Response', $response);
 
-        $this->assertTrue(is_string($response->getCompiledCode()));
+        $this->assertEquals('var a="hello";alert(a);', $response->getCompiledCode());
         $this->assertTrue(is_array($response->getWarnings()));
         $this->assertTrue(is_array($response->getErrors()));
-        $this->assertTrue(is_integer($response->getCompileTime()));
-        $this->assertTrue(is_integer($response->getOriginalSize()));
-        $this->assertTrue(is_integer($response->getOriginalGzipSize()));
-        $this->assertTrue(is_integer($response->getCompressedSize()));
-        $this->assertTrue(is_integer($response->getCompressedGzipSize()));
+        $this->assertEquals(0, $response->getCompileTime());
+        $this->assertEquals(98, $response->getOriginalSize());
+        $this->assertEquals(62, $response->getOriginalGzipSize());
+        $this->assertEquals(35, $response->getCompressedSize());
+        $this->assertEquals(23, $response->getCompressedGzipSize());
     }
 }
