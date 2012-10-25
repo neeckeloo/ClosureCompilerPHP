@@ -8,9 +8,25 @@
 namespace Closure;
 
 use Closure\Compiler\Response as CompilerResponse;
+use Closure\Compiler\Response\Error as CompilerResponseError;
 
 class RemoteCompiler extends AbstractCompiler
 {
+    /**
+     * @var string 
+     */
+    protected $url = 'http://closure-compiler.appspot.com/compile';
+
+    /**
+     * @var integer
+     */
+    protected $port = 80;
+
+    /**
+     * @var string
+     */
+    protected $method = HttpRequestHandler::METHOD_POST;
+
     /**
      * @var HttpRequestHandler
      */
@@ -32,9 +48,9 @@ class RemoteCompiler extends AbstractCompiler
     {
         $this->requestHandler = $handler;
 
-        $this->requestHandler->setUrl('http://closure-compiler.appspot.com/compile')
-            ->setPort(80)
-            ->setMethod(HttpRequestHandler::METHOD_POST);
+        $this->requestHandler->setUrl($this->url)
+            ->setPort($this->port)
+            ->setMethod($this->method);
 
         return $this;
     }
@@ -81,26 +97,77 @@ class RemoteCompiler extends AbstractCompiler
     }
 
     /**
-     * Build response object parsing xml contained in the compiler response
+     * Parse response xml
      *
      * @param \SimpleXMLElement $xml
      * @return array
      */
-    function buildResponse($xml)
+    protected function parseXml($xml)
+    {
+        $data = array();
+        
+        foreach ($xml->children() as $name => $child) {
+            if (count($child->children()) > 0) {
+                $value = $this->parseXml($child);
+            } else {
+                $value = (string) $child;
+            }
+
+            $node = array(
+                'tag'   => $name,
+                'value' => $value
+            );
+
+            foreach ($child->attributes() as $name => $value) {
+                $node['attributes'][$name] = (string) $value[0];
+            }
+            
+            $data[] = $node;
+        }
+
+        return $data;
+    }
+
+    /**
+     * Build response object from compiler response data
+     *
+     * @param array $data
+     * @return array
+     */
+    protected function buildResponse($data)
     {
         $response = $this->getCompilerResponse();
 
-        foreach ($xml->children() as $name => $child) {
-            if (count($child->children()) > 0) {
-                $this->buildResponse($child);
+        foreach ($data as $item) {
+            if (!isset($item['tag']) && !isset($item['value'])) {
                 continue;
             }
 
-            $value = (string) $child;
+            if (isset($item['tag']) && ($item['tag'] == 'errors' || $item['tag'] == 'warnings')) {
+                foreach ($item['value'] as $error) {
+                    $attributes = $error['attributes'];
+                    
+                    $error = new CompilerResponseError($error['value'], array(
+                        'type' => $attributes['type'],
+                        'file' => $attributes['file'],
+                        'line' => $attributes['lineno'],
+                        'char' => $attributes['charno'],
+                        'code' => $attributes['line'],
+                    ));
 
-            $method = 'set' . ucfirst($name);
-            if (method_exists($response, $method)) {
-                call_user_func_array(array($response, $method), array($value));
+                    if ($item['tag'] == 'errors') {
+                        $response->addError($error);
+                    } else {
+                        $response->addWarning($error);
+                    }
+                }
+            } elseif (is_array($item['value'])) {
+                $this->buildResponse($item['value']);
+            } else {
+                $method = 'set' . ucfirst($item['tag']);
+                if (method_exists($response, $method)) {
+                    call_user_func_array(array($response, $method), array($item['value']));
+                }
             }
         }
 
@@ -118,9 +185,9 @@ class RemoteCompiler extends AbstractCompiler
         $requestHandler->setData($this->getParams());
 
         $responseData = $requestHandler->sendRequest();
-
         $xml = new \SimpleXMLElement($responseData);
+        $data = $this->parseXml($xml);
 
-        return $this->buildResponse($xml);
+        return $this->buildResponse($data);
     }
 }

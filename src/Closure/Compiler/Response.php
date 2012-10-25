@@ -7,6 +7,8 @@
  */
 namespace Closure\Compiler;
 
+use Closure\Compiler\Response\Error as ResponseError;
+
 class Response
 {
     /**
@@ -73,14 +75,14 @@ class Response
     }
 
     /**
-     * Sets warnings
+     * Add warning
      *
-     * @param array $warnings
+     * @param ResponseError $warning
      * @return Response
      */
-    public function setWarnings($warnings)
+    public function addWarning(ResponseError $warning)
     {
-        $this->warnings = (array) $warnings;
+        $this->warnings[] = $warning;
 
         return $this;
     }
@@ -96,14 +98,14 @@ class Response
     }
 
     /**
-     * Sets errors
+     * Add error
      *
-     * @param array $errors
+     * @param ResponseError $error
      * @return Response
      */
-    public function setErrors($errors)
+    public function addError(ResponseError $error)
     {
-        $this->errors = (array) $errors;
+        $this->errors[] = $error;
 
         return $this;
     }
