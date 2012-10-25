@@ -91,6 +91,7 @@ abstract class AbstractCompiler implements CompilerInterface
      *
      * @param string $mode
      * @return RemoteCompiler
+     * @throws Exception\InvalidArgumentException
      */
     public function setMode($mode = self::MODE_WHITESPACE_ONLY)
     {
@@ -121,6 +122,7 @@ abstract class AbstractCompiler implements CompilerInterface
      *
      * @param string $format
      * @return RemoteCompiler
+     * @throws Exception\InvalidArgumentException
      */
     public function setOutputFormat($format = self::OUTPUT_FORMAT_XML)
     {
@@ -151,6 +153,7 @@ abstract class AbstractCompiler implements CompilerInterface
      *
      * @param string $level
      * @return RemoteCompiler
+     * @throws Exception\InvalidArgumentException
      */
     public function setWarningLevel($level = self::WARNING_LEVEL_DEFAULT)
     {
@@ -221,6 +224,7 @@ abstract class AbstractCompiler implements CompilerInterface
      *
      * @param string $file
      * @return AbstractCompiler
+     * @throws Exception\InvalidArgumentException
      */
     public function addLocalFile($file)
     {
@@ -241,6 +245,7 @@ abstract class AbstractCompiler implements CompilerInterface
      *
      * @param string $url
      * @return AbstractCompiler
+     * @throws Exception\InvalidArgumentException
      */
     public function addRemoteFile($url)
     {
