@@ -27,27 +27,27 @@ class Response
     protected $errors = array();
 
     /**
-     * @var string
+     * @var integer
      */
     protected $originalSize;
 
     /**
-     * @var string
+     * @var integer
      */
     protected $originalGzipSize;
 
     /**
-     * @var string
+     * @var integer
      */
     protected $compressedSize;
 
     /**
-     * @var string
+     * @var integer
      */
     protected $compressedGzipSize;
 
     /**
-     * @var string
+     * @var integer
      */
     protected $compileTime;
 
