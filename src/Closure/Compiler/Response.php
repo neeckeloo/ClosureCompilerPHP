@@ -90,11 +90,21 @@ class Response
     /**
      * Returns warnings
      *
-     * @return string
+     * @return array
      */
     public function getWarnings()
     {
         return $this->warnings;
+    }
+
+    /**
+     * Returns true if there are warnings
+     *
+     * @return boolean
+     */
+    public function hasWarnings()
+    {
+        return !empty($this->warnings);
     }
 
     /**
@@ -113,11 +123,21 @@ class Response
     /**
      * Returns errors
      *
-     * @return string
+     * @return array
      */
     public function getErrors()
     {
         return $this->errors;
+    }
+
+    /**
+     * Returns true if there are errors
+     *
+     * @return boolean
+     */
+    public function hasErrors()
+    {
+        return !empty($this->errors);
     }
 
     /**
@@ -233,5 +253,15 @@ class Response
     public function getCompileTime()
     {
         return $this->compileTime;
+    }
+
+    /**
+     * Returns true if code has compiled
+     *
+     * @return boolean
+     */
+    public function isCompiled()
+    {
+        return !$this->hasErrors() && empty($this->compiledCode);
     }
 }

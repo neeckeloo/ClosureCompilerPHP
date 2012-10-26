@@ -37,6 +37,16 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(3, $this->response->getWarnings());
     }
 
+    public function testHasWarnings()
+    {
+        $this->assertFalse($this->response->hasWarnings());
+
+        $warning = new CompilerResponseError('foo', array());
+        $this->response->addWarning($warning);
+
+        $this->assertTrue($this->response->hasWarnings());
+    }
+
     public function testAddErrors()
     {
         for ($i = 0; $i < 3; $i++) {
@@ -45,6 +55,16 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
         }
 
         $this->assertCount(3, $this->response->getErrors());
+    }
+
+    public function testHasErrors()
+    {
+        $this->assertFalse($this->response->hasErrors());
+
+        $error = new CompilerResponseError('foo', array());
+        $this->response->addError($error);
+
+        $this->assertTrue($this->response->hasErrors());
     }
 
     public function testSetOriginalSize()
@@ -75,5 +95,15 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
     {
         $this->response->setCompileTime(123);
         $this->assertEquals(123, $this->response->getCompileTime());
+    }
+
+    public function testIsCompiled()
+    {
+        $this->assertTrue($this->response->isCompiled());
+
+        $error = new CompilerResponseError('foo', array());
+        $this->response->addError($error);
+
+        $this->assertFalse($this->response->isCompiled());
     }
 }
