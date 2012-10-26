@@ -300,6 +300,23 @@ abstract class AbstractCompiler implements CompilerInterface
     }
 
     /**
+     * Returns compile hash
+     *
+     * @return string
+     */
+    public function getHash()
+    {
+        return md5(
+            implode('', $this->scripts)
+            . implode('', $this->files)
+            . $this->mode
+            . $this->warningLevel
+            . $this->getFormattingOptions()->getPrettyPrintEnabled()
+            . $this->getFormattingOptions()->getPrintInputDelimiterEnabled()
+        );
+    }
+
+    /**
      * Compile Javascript code
      *
      * @return string

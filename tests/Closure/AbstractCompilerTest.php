@@ -120,6 +120,14 @@ class AbstractCompilerTest extends \PHPUnit_Framework_TestCase
         $this->compiler->addRemoteFile('foo');
     }
 
+    public function testGetHash()
+    {
+        $hash = $this->compiler->getHash();
+        
+        $this->assertTrue(is_string($hash));
+        $this->assertEquals(32, strlen($hash));
+    }
+
     /**
      * @expectedException Closure\Exception\RuntimeException
      */
