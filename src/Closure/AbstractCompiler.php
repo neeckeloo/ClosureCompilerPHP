@@ -241,6 +241,47 @@ abstract class AbstractCompiler implements CompilerInterface
     }
 
     /**
+     * Add local files contains in directory
+     * 
+     * @param string $directory
+     * @param boolean $recursive
+     * @return AbstractCompiler
+     * @throws Exception\InvalidArgumentException
+     */
+    public function addLocalDirectory($directory, $recursive = false)
+    {
+        if (!file_exists($directory) || !is_dir($directory)) {
+            throw new Exception\InvalidArgumentException(sprintf(
+                'The directory "%s" does not exists.',
+                $directory
+            ));
+        }
+
+        if ($recursive) {
+            $iterator = new \RecursiveIteratorIterator(
+                new \RecursiveDirectoryIterator($directory)
+            );
+        } else {
+            $iterator = new \DirectoryIterator($directory);
+        }
+
+        foreach ($iterator as $fileinfo) {
+            if (!$fileinfo->isFile()) {
+                continue;
+            }
+            
+            $extension = $fileinfo->getExtension();
+            if ($extension != 'js') {
+                continue;
+            }
+
+            $this->addLocalFile($fileinfo->getPathname());
+        }
+
+        return $this;
+    }
+
+    /**
      * Add remote javascript file
      *
      * @param string $url

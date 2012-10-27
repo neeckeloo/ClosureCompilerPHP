@@ -99,9 +99,9 @@ class AbstractCompilerTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testGetParams()
+    public function testAddLocalFile()
     {
-        $this->assertCount(7, $this->compiler->getParams());
+        $this->compiler->addLocalFile(__DIR__ . '/_files/file1.js');
     }
 
     /**
@@ -109,7 +109,28 @@ class AbstractCompilerTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddLocalFileThatNotExists()
     {
-        $this->compiler->addLocalFile('foo');
+        $this->compiler->addLocalFile('foo.js');
+    }
+
+    public function testAddLocalDirectory()
+    {
+        $this->compiler->addLocalDirectory(__DIR__ . '/_files');
+    }
+
+    /**
+     * @expectedException Closure\Exception\InvalidArgumentException
+     */
+    public function testAddLocalDirectoryThatNotExists()
+    {
+        $this->compiler->addLocalDirectory('./foo');
+    }
+
+    /**
+     * @expectedException Closure\Exception\InvalidArgumentException
+     */
+    public function testAddLocalDirectoryWithFileParam()
+    {
+        $this->compiler->addLocalDirectory(__DIR__ . '/_files/file1.js');
     }
 
     /**
@@ -118,6 +139,11 @@ class AbstractCompilerTest extends \PHPUnit_Framework_TestCase
     public function testAddRemoteFileWithInvalidUrl()
     {
         $this->compiler->addRemoteFile('foo');
+    }
+
+    public function testGetParams()
+    {
+        $this->assertCount(7, $this->compiler->getParams());
     }
 
     public function testGetHash()
