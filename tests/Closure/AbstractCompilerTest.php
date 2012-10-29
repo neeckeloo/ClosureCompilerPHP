@@ -7,6 +7,8 @@
  */
 namespace Closure;
 
+use Closure\Compiler\Response as CompilerResponse;
+
 class AbstractCompilerTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -139,6 +141,20 @@ class AbstractCompilerTest extends \PHPUnit_Framework_TestCase
     public function testAddRemoteFileWithInvalidUrl()
     {
         $this->compiler->addRemoteFile('foo');
+    }
+
+    public function testSetCompilerResponse()
+    {
+        $this->assertInstanceOf(
+            'Closure\Compiler\Response',
+            $this->compiler->getCompilerResponse()
+        );
+
+        $this->compiler->setCompilerResponse(new CompilerResponse());
+        $this->assertInstanceOf(
+            'Closure\Compiler\Response',
+            $this->compiler->getCompilerResponse()
+        );
     }
 
     public function testGetParams()

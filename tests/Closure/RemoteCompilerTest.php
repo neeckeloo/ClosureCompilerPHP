@@ -7,8 +7,6 @@
  */
 namespace Closure;
 
-use Closure\Compiler\Response as CompilerResponse;
-
 class RemoteCompilerTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -32,20 +30,6 @@ class RemoteCompilerTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(
             'Closure\HttpRequestHandler',
             $this->compiler->getRequestHandler()
-        );
-    }
-
-    public function testSetCompilerResponse()
-    {
-        $this->assertInstanceOf(
-            'Closure\Compiler\Response',
-            $this->compiler->getCompilerResponse()
-        );
-
-        $this->compiler->setCompilerResponse(new CompilerResponse());
-        $this->assertInstanceOf(
-            'Closure\Compiler\Response',
-            $this->compiler->getCompilerResponse()
         );
     }
 

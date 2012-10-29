@@ -8,6 +8,7 @@
 namespace Closure;
 
 use Closure\Compiler\FormattingOptions;
+use Closure\Compiler\Response as CompilerResponse;
 
 abstract class AbstractCompiler implements CompilerInterface
 {
@@ -85,6 +86,11 @@ abstract class AbstractCompiler implements CompilerInterface
      * @var array
      */
     protected $scripts = array();
+
+    /**
+     * @var CompilerResponse
+     */
+    protected $response;
 
     /**
      * Sets mode
@@ -300,6 +306,33 @@ abstract class AbstractCompiler implements CompilerInterface
         $this->files[] = (string) $url;
 
         return $this;
+    }
+
+    /**
+     * Sets compiler response
+     *
+     * @param CompilerResponse $response
+     * @return AbstractCompiler
+     */
+    public function setCompilerResponse($response)
+    {
+        $this->response = $response;
+
+        return $this;
+    }
+
+    /**
+     * Returns compiler response
+     *
+     * @return CompilerResponse
+     */
+    public function getCompilerResponse()
+    {
+        if (!isset($this->response)) {
+            $this->setCompilerResponse(new CompilerResponse());
+        }
+
+        return $this->response;
     }
 
     /**

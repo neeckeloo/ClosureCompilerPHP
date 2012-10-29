@@ -7,7 +7,6 @@
  */
 namespace Closure;
 
-use Closure\Compiler\Response as CompilerResponse;
 use Closure\Compiler\Response\Error as CompilerResponseError;
 
 class RemoteCompiler extends AbstractCompiler
@@ -31,12 +30,6 @@ class RemoteCompiler extends AbstractCompiler
      * @var HttpRequestHandler
      */
     protected $requestHandler;
-
-    /**
-     *
-     * @var CompilerResponse
-     */
-    protected $response;
 
     /**
      * Sets request handler
@@ -67,33 +60,6 @@ class RemoteCompiler extends AbstractCompiler
         }
 
         return $this->requestHandler;
-    }
-
-    /**
-     * Sets compiler response
-     *
-     * @param CompilerResponse $response
-     * @return RemoteCompiler
-     */
-    public function setCompilerResponse($response)
-    {
-        $this->response = $response;
-
-        return $this;
-    }
-
-    /**
-     * Returns compiler response
-     *
-     * @return CompilerResponse
-     */
-    public function getCompilerResponse()
-    {
-        if (!isset($this->response)) {
-            $this->setCompilerResponse(new CompilerResponse());
-        }
-
-        return $this->response;
     }
 
     /**
