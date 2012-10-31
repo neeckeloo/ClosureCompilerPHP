@@ -22,13 +22,13 @@ class RemoteCompilerTest extends \PHPUnit_Framework_TestCase
     public function testSetRequestHandler()
     {
         $this->assertInstanceOf(
-            'Closure\HttpRequestHandler',
+            '\Zend\Http\Client',
             $this->compiler->getRequestHandler()
         );
 
-        $this->compiler->setRequestHandler(new HttpRequestHandler());
+        $this->compiler->setRequestHandler(new \Zend\Http\Client());
         $this->assertInstanceOf(
-            'Closure\HttpRequestHandler',
+            '\Zend\Http\Client',
             $this->compiler->getRequestHandler()
         );
     }
@@ -45,11 +45,18 @@ class RemoteCompilerTest extends \PHPUnit_Framework_TestCase
             <compileTime>0</compileTime>
           </statistics>
         </compilationResult>';
-        
-        $requestHandler = $this->getMock('Closure\HttpRequestHandler', array('sendRequest'));
-        $requestHandler->expects($this->once())
-            ->method('sendRequest')
+
+        $httpResponse = $this->getMock('\Zend\Http\Response', array('getContent'));
+
+        $httpResponse->expects($this->once())
+            ->method('getContent')
             ->will($this->returnValue($xml));
+
+        $requestHandler = $this->getMock('\Zend\Http\Client', array('send'));
+
+        $requestHandler->expects($this->once())
+            ->method('send')
+            ->will($this->returnValue($httpResponse));
 
         $this->compiler->setRequestHandler($requestHandler);
 

@@ -24,26 +24,27 @@ class RemoteCompiler extends AbstractCompiler
     /**
      * @var string
      */
-    protected $method = HttpRequestHandler::METHOD_POST;
+    protected $method = \Zend\Http\Request::METHOD_POST;
 
     /**
-     * @var HttpRequestHandler
+     * @var \Zend\Http\Client
      */
     protected $requestHandler;
 
     /**
      * Sets request handler
      *
-     * @param HttpRequestHandler $handler
+     * @param \Zend\Http\Client $handler
      * @return RemoteCompiler
      */
     public function setRequestHandler($handler)
     {
         $this->requestHandler = $handler;
 
-        $this->requestHandler->setUrl($this->url)
-            ->setPort($this->port)
+        $this->requestHandler->setUri($this->url)
             ->setMethod($this->method);
+
+        $this->requestHandler->getUri()->setPort($this->port);
 
         return $this;
     }
@@ -51,12 +52,12 @@ class RemoteCompiler extends AbstractCompiler
     /**
      * Returns request handler
      *
-     * @return HttpRequestHandler
+     * @return \Zend\Http\Client
      */
     public function getRequestHandler()
     {
         if (!isset($this->requestHandler)) {
-            $this->setRequestHandler(new HttpRequestHandler());
+            $this->setRequestHandler(new \Zend\Http\Client());
         }
 
         return $this->requestHandler;
@@ -141,6 +142,23 @@ class RemoteCompiler extends AbstractCompiler
     }
 
     /**
+     * Parse and encode data
+     *
+     * @param array $params
+     * @return string
+     */
+    protected function encodeData($params)
+    {
+        $data = array();
+        foreach ($params as $key => $value) {
+            $key = preg_replace('/_[0-9]$/', '', $key);
+            $data[] = $key . '=' . urlencode($value);
+        }
+
+        return implode('&', $data);
+    }
+
+    /**
      * Compile Javascript code
      * 
      * @return string
@@ -148,10 +166,12 @@ class RemoteCompiler extends AbstractCompiler
     public function compile()
     {
         $requestHandler = $this->getRequestHandler();
-        $requestHandler->setData($this->getParams());
+        
+        $encodedData = $this->encodeData($this->getParams());
+        $requestHandler->setRawBody($encodedData);
 
-        $responseData = $requestHandler->sendRequest();
-        $xml = new \SimpleXMLElement($responseData);
+        $response = $requestHandler->send();
+        $xml = new \SimpleXMLElement($response->getContent());
         $data = $this->parseXml($xml);
 
         return $this->buildResponse($data);
