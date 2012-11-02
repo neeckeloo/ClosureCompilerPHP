@@ -7,6 +7,7 @@
  */
 namespace Closure;
 
+use Closure\Compiler\Response as CompilerResponse;
 use Closure\Compiler\Response\Error as CompilerResponseError;
 
 class RemoteCompiler extends AbstractCompiler
@@ -99,7 +100,7 @@ class RemoteCompiler extends AbstractCompiler
      * Build response object from compiler response data
      *
      * @param array $data
-     * @return array
+     * @return CompilerResponse
      */
     protected function buildResponse($data)
     {
@@ -161,12 +162,12 @@ class RemoteCompiler extends AbstractCompiler
     /**
      * Compile Javascript code
      * 
-     * @return string
+     * @return CompilerResponse
      */
     public function compile()
     {
         $requestHandler = $this->getRequestHandler();
-        
+
         $encodedData = $this->encodeData($this->getParams());
         $requestHandler->setRawBody($encodedData);
 

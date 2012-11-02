@@ -393,7 +393,7 @@ abstract class AbstractCompiler implements CompilerInterface
     /**
      * Compile Javascript code
      *
-     * @return string
+     * @return CompilerResponse
      * @throws Exception\RuntimeException
      */
     public function compile()
