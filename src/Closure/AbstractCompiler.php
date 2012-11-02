@@ -16,10 +16,6 @@ abstract class AbstractCompiler implements CompilerInterface
     const MODE_SIMPLE_OPTIMIZATIONS = 'SIMPLE_OPTIMIZATIONS';
     const MODE_ADVANCED_OPTIMIZATIONS = 'ADVANCED_OPTIMIZATIONS';
 
-    const OUTPUT_FORMAT_XML = 'xml';
-    const OUTPUT_FORMAT_JSON = 'json';
-    const OUTPUT_FORMAT_TEXT = 'text';
-
     const WARNING_LEVEL_DEFAULT = 'default';
     const WARNING_LEVEL_QUIET = 'quiet';
     const WARNING_LEVEL_VERBOSE = 'verbose';
@@ -38,22 +34,6 @@ abstract class AbstractCompiler implements CompilerInterface
         self::MODE_WHITESPACE_ONLY,
         self::MODE_SIMPLE_OPTIMIZATIONS,
         self::MODE_ADVANCED_OPTIMIZATIONS,
-    );
-
-    /**
-     * @var string
-     */
-    protected $outputFormat = self::OUTPUT_FORMAT_XML;
-
-    /**
-     * Available output formats
-     *
-     * @var array
-     */
-    protected $availableOutputFormats = array(
-        self::OUTPUT_FORMAT_XML,
-        self::OUTPUT_FORMAT_JSON,
-        self::OUTPUT_FORMAT_TEXT,
     );
 
     /**
@@ -121,37 +101,6 @@ abstract class AbstractCompiler implements CompilerInterface
     public function getMode()
     {
         return $this->mode;
-    }
-
-    /**
-     * Sets output format
-     *
-     * @param string $format
-     * @return RemoteCompiler
-     * @throws Exception\InvalidArgumentException
-     */
-    public function setOutputFormat($format = self::OUTPUT_FORMAT_XML)
-    {
-        if (!in_array($format, $this->availableOutputFormats)) {
-            throw new Exception\InvalidArgumentException(sprintf(
-                'The output format "%s" is not available.',
-                $format
-            ));
-        }
-
-        $this->outputFormat = (string) $format;
-
-        return $this;
-    }
-
-    /**
-     * Returns output format
-     *
-     * @return string
-     */
-    public function getOutputFormat()
-    {
-        return $this->outputFormat;
     }
 
     /**
@@ -344,7 +293,7 @@ abstract class AbstractCompiler implements CompilerInterface
     {
         $params = array(
             'compilation_level' => $this->getMode(),
-            'output_format'     => $this->getOutputFormat(),
+            'output_format'     => 'xml',
             'warning_level'     => $this->getWarningLevel(),
             'output_info_1'     => 'compiled_code',
             'output_info_2'     => 'statistics',

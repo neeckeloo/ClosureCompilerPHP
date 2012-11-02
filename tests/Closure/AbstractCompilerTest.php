@@ -43,28 +43,6 @@ class AbstractCompilerTest extends \PHPUnit_Framework_TestCase
         $this->compiler->setMode('foo');
     }
 
-    public function testSetOutputFormat()
-    {
-        $this->assertEquals(
-            AbstractCompiler::OUTPUT_FORMAT_XML,
-            $this->compiler->getOutputFormat()
-        );
-
-        $this->compiler->setOutputFormat(AbstractCompiler::OUTPUT_FORMAT_JSON);
-        $this->assertEquals(
-            AbstractCompiler::OUTPUT_FORMAT_JSON,
-            $this->compiler->getOutputFormat()
-        );
-    }
-
-    /**
-     * @expectedException Closure\Exception\InvalidArgumentException
-     */
-    public function testSetOutputFormatWithInvalidParam()
-    {
-        $this->compiler->setOutputFormat('foo');
-    }
-
     public function testSetWarningLevel()
     {
         $this->assertEquals(
