@@ -12,13 +12,13 @@
          bootstrap="./vendor/autoload.php">
     <testsuites>
         <testsuite name="Closure Compiler Test Suite">
-            <directory>./tests/ClosureCompiler</directory>
+            <directory>./tests/Closure</directory>
         </testsuite>
     </testsuites>
 
     <filter>
         <whitelist>
-            <directory suffix=".php">src/ClosureCompiler</directory>
+            <directory suffix=".php">src/Closure</directory>
         </whitelist>
     </filter>
 </phpunit>
