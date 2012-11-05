@@ -9,7 +9,7 @@ namespace Closure\Compiler;
 
 use Closure\Compiler\Response\Error as ResponseError;
 
-class Response
+class Response implements ResponseInterface
 {
     /**
      * @var string

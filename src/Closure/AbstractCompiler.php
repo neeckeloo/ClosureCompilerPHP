@@ -9,6 +9,7 @@ namespace Closure;
 
 use Closure\Compiler\FormattingOptions;
 use Closure\Compiler\Response as CompilerResponse;
+use Closure\Compiler\ResponseInterface as CompilerResponseInterface;
 
 abstract class AbstractCompiler implements CompilerInterface
 {
@@ -263,7 +264,7 @@ abstract class AbstractCompiler implements CompilerInterface
      * @param CompilerResponse $response
      * @return AbstractCompiler
      */
-    public function setCompilerResponse($response)
+    public function setCompilerResponse(CompilerResponseInterface $response)
     {
         $this->response = $response;
 
