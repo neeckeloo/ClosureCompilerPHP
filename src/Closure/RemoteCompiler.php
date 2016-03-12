@@ -176,7 +176,7 @@ class RemoteCompiler extends AbstractCompiler
         $requestHandler->setRawBody($encodedData);
 
         $response = $requestHandler->send();
-        $xml = new \SimpleXMLElement($response->getContent());
+        $xml = new \SimpleXMLElement($response->getBody());
         $data = $this->parseXml($xml);
 
         return $this->buildResponse($data);

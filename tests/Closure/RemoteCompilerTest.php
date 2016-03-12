@@ -46,10 +46,10 @@ class RemoteCompilerTest extends \PHPUnit_Framework_TestCase
           </statistics>
         </compilationResult>';
 
-        $httpResponse = $this->getMock('\Zend\Http\Response', array('getContent'));
+        $httpResponse = $this->getMock('\Zend\Http\Response', array('getBody'));
 
         $httpResponse->expects($this->once())
-            ->method('getContent')
+            ->method('getBody')
             ->will($this->returnValue($xml));
 
         $requestHandler = $this->getMock('\Zend\Http\Client', array('send'));
